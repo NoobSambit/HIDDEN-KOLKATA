@@ -1,6 +1,7 @@
 'use client';
 
-import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
+import { useEffect } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { Pin } from '@/utils/types';
@@ -49,6 +50,16 @@ function MapClickHandler({ onMapClick }: { onMapClick?: (lat: number, lng: numbe
   return null;
 }
 
+function MapUpdater({ center, zoom }: { center: { lat: number; lng: number }; zoom: number }) {
+  const map = useMap();
+  
+  useEffect(() => {
+    map.setView([center.lat, center.lng], zoom);
+  }, [center.lat, center.lng, zoom, map]);
+  
+  return null;
+}
+
 export default function MapView({ pins, center, zoom, onMapClick, selectedLocation }: MapViewProps) {
   const mapCenter = center || KOLKATA_CENTER;
   const mapZoom = zoom || DEFAULT_ZOOM;
@@ -62,6 +73,7 @@ export default function MapView({ pins, center, zoom, onMapClick, selectedLocati
     >
       <TileLayer url={OSM_TILE_URL} attribution={OSM_ATTRIBUTION} />
       <MapClickHandler onMapClick={onMapClick} />
+      <MapUpdater center={mapCenter} zoom={mapZoom} />
 
       {pins.map((pin) => (
         <Marker
