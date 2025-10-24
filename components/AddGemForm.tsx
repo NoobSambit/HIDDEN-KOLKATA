@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient';
 import { fetchUnsplashImage } from '@/lib/fetchUnsplash';
 import { MapPin, Image as ImageIcon, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { GEM_CATEGORIES, type GemCategory } from '@/utils/constants';
 
 type AddGemFormProps = {
   selectedLocation: { lat: number; lng: number } | null;
@@ -15,6 +16,7 @@ export default function AddGemForm({ selectedLocation, onSuccess }: AddGemFormPr
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [category, setCategory] = useState<GemCategory>('other');
   const [loading, setLoading] = useState(false);
   const [fetchingImage, setFetchingImage] = useState(false);
 
@@ -63,6 +65,7 @@ export default function AddGemForm({ selectedLocation, onSuccess }: AddGemFormPr
           latitude: selectedLocation.lat,
           longitude: selectedLocation.lng,
           image_url: imageUrl,
+          category: category,
           created_by: null,
         },
       ]);
@@ -73,6 +76,7 @@ export default function AddGemForm({ selectedLocation, onSuccess }: AddGemFormPr
       setName('');
       setDescription('');
       setImageUrl('');
+      setCategory('other');
 
       if (onSuccess) {
         onSuccess();
@@ -116,6 +120,25 @@ export default function AddGemForm({ selectedLocation, onSuccess }: AddGemFormPr
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C46C24] focus:border-transparent outline-none transition resize-none"
           placeholder="Tell us what makes this place special..."
         />
+      </div>
+
+      <div>
+        <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-2">
+          Category *
+        </label>
+        <select
+          id="category"
+          value={category}
+          onChange={(e) => setCategory(e.target.value as GemCategory)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#C46C24] focus:border-transparent outline-none transition bg-white"
+          required
+        >
+          {Object.entries(GEM_CATEGORIES).map(([key, { label }]) => (
+            <option key={key} value={key}>
+              {label}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>

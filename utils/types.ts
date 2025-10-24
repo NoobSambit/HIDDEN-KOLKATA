@@ -1,3 +1,5 @@
+import { GemCategory } from './constants';
+
 export type Pin = {
   id: string;
   name: string;
@@ -8,7 +10,7 @@ export type Pin = {
   created_by: string | null;
   created_at: string;
   likes?: number;
-  category?: string;
+  category?: GemCategory;
 };
 
 export type MapPosition = {

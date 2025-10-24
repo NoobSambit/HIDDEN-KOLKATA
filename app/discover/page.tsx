@@ -9,11 +9,17 @@ import { Badge } from '@/components/ui/badge';
 import { AITrailSuggestion } from '@/utils/types';
 import { fetchGemini } from '@/lib/fetchGemini';
 import { toast } from 'sonner';
+import dynamic from 'next/dynamic';
+
+const TrailMapModal = dynamic(() => import('@/components/TrailMapModal'), {
+  ssr: false,
+});
 
 export default function DiscoverPage() {
   const [prompt, setPrompt] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [suggestion, setSuggestion] = useState<AITrailSuggestion | null>(null);
+  const [showMapModal, setShowMapModal] = useState(false);
 
   const generateTrail = async () => {
     if (!prompt.trim()) {
@@ -183,7 +189,10 @@ Focus on Kolkata landmarks, cafes, art spots, heritage sites, and hidden gems. I
                 >
                   Copy Trail
                 </Button>
-                <Button className="flex-1 bg-gradient-to-r from-teal-500 to-mint-500">
+                <Button
+                  className="flex-1 bg-gradient-to-r from-teal-500 to-mint-500"
+                  onClick={() => setShowMapModal(true)}
+                >
                   View on Map
                 </Button>
               </div>
@@ -198,6 +207,10 @@ Focus on Kolkata landmarks, cafes, art spots, heritage sites, and hidden gems. I
           </div>
         )}
       </div>
+
+      {showMapModal && suggestion && (
+        <TrailMapModal trail={suggestion} onClose={() => setShowMapModal(false)} />
+      )}
     </div>
   );
 }
